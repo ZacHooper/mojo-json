@@ -116,7 +116,9 @@ def lex(string: String) -> List[AnyJsonType]:
 fn any_json_type_to_string(value: AnyJsonType) raises -> String:
     if value.isa[String]():
         var string_value = value.get[String]()[]
-        if string_value in JSON_SYNTAX:
+        if len(string_value) == 0:
+            return '""'
+        elif string_value in JSON_SYNTAX:
             return string_value
         else:
             return '"' + value.get[String]()[] + '"'
