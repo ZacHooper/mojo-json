@@ -1,4 +1,4 @@
-from parser import parse
+from parser import parse, parse_2
 from types import AnyJsonType, AnyJsonObject
 from testing import assert_equal
 from json import any_json_type_to_string
@@ -48,5 +48,31 @@ fn test_parse_object() raises -> None:
         print("Key: ", i[], "Value: ", any_json_type_to_string(res[i[]]))
 
 
+fn test_parse_lex() raises -> None:
+    var lex_array = List[AnyJsonType](
+        String("{"),
+        String("key"),
+        String(":"),
+        1,
+        String(","),
+        String("key_2"),
+        String(":"),
+        String("hello"),
+        String(","),
+        String("key_3"),
+        String(":"),
+        False,
+        String(","),
+        String("key_4"),
+        String(":"),
+        1.2,
+        String("}"),
+    )
+    var res = parse_2(lex_array)
+    print(res)
+    # for i in res.keys():
+    #     print("Key: ", i[], "Value: ", any_json_type_to_string(res[i[]]))
+
+
 fn main() raises:
-    test_parse_object()
+    test_parse_lex()

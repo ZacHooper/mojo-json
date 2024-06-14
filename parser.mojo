@@ -87,7 +87,7 @@ def parse_object(inout tokens: List[AnyJsonType]) -> Dict[String, AnyJsonObject]
     return json_object
 
 
-def parse(inout tokens: List[AnyJsonType]) -> Dict[String, AnyJsonType]:
+fn parse(inout tokens: List[AnyJsonType]) raises -> Dict[String, AnyJsonType]:
     """testing to workout JSON object."""
     var output = Dict[String, AnyJsonType]()
     var t = tokens[0]
@@ -109,3 +109,4 @@ def parse(inout tokens: List[AnyJsonType]) -> Dict[String, AnyJsonType]:
             tokens = tokens[1:]
             output[key.get[String]()[]] = value
     return output
+
