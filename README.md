@@ -1,12 +1,24 @@
 # Json Mojo
 
+## Overview
+
+This is a simple JSON parser written in Mojo. It mimics the Python JSON module so you can copy in your existing code and it should work. This is a naive implementation and may not handle all edge cases and may not be the most efficient.
+
+## Usage
+
+```mojo
+import json
+
+x = json.loads('{"key": "value"}')
+json.dumps(x)
+>>> '{"key": "value"}'
+```
+
 ## TODO
 
-When recursive variants are available we should be able to expand on this further. Implementations in Rust uses a recursive enum.
+### Edge Cases to Consider
 
-Sure, JSON is a relatively simple data format, but there are still edge cases that can be tricky. Here are some examples that could potentially break a JSON parser:
-
-### 1. Trailing Comma
+#### 1. Trailing Comma
 
 ```json
 {
@@ -17,7 +29,7 @@ Sure, JSON is a relatively simple data format, but there are still edge cases th
 
 Trailing commas after the last key-value pair are not allowed in JSON.
 
-### 2. Missing Quotes around Keys
+#### 2. Missing Quotes around Keys
 
 ```json
 {
@@ -28,7 +40,7 @@ Trailing commas after the last key-value pair are not allowed in JSON.
 
 Keys must always be strings enclosed in double quotes.
 
-### 3. Single Quotes Instead of Double Quotes
+#### 3. Single Quotes Instead of Double Quotes
 
 ```json
 {
@@ -39,7 +51,7 @@ Keys must always be strings enclosed in double quotes.
 
 JSON requires double quotes around strings, not single quotes.
 
-### 4. Non-string Key
+#### 4. Non-string Key
 
 ```json
 {
@@ -49,7 +61,7 @@ JSON requires double quotes around strings, not single quotes.
 
 Keys must be strings enclosed in double quotes.
 
-### 5. Invalid Unicode Characters
+#### 5. Invalid Unicode Characters
 
 ```json
 {
@@ -59,7 +71,7 @@ Keys must be strings enclosed in double quotes.
 
 `\u` must be followed by four hexadecimal digits.
 
-### 6. Unescaped Control Characters
+#### 6. Unescaped Control Characters
 
 ```json
 {
@@ -69,7 +81,7 @@ Keys must be strings enclosed in double quotes.
 
 Control characters must be properly escaped.
 
-### 7. Dangling Quotes
+#### 7. Dangling Quotes
 
 ```json
 {
@@ -80,7 +92,7 @@ Control characters must be properly escaped.
 
 Missing commas between key-value pairs.
 
-### 8. Special Numbers
+#### 8. Special Numbers
 
 ```json
 {
@@ -90,7 +102,7 @@ Missing commas between key-value pairs.
 
 `NaN`, `Infinity`, and `-Infinity` are not valid values in JSON.
 
-### 9. Nested Structures
+#### 9. Nested Structures
 
 ```json
 {
@@ -108,7 +120,7 @@ Missing commas between key-value pairs.
 
 Extreme nesting could potentially break a parser if recursion depth is not handled properly.
 
-### 10. Mixed Array Types
+#### 10. Mixed Array Types
 
 ```json
 {
@@ -118,7 +130,7 @@ Extreme nesting could potentially break a parser if recursion depth is not handl
 
 While this is valid JSON, it could cause issues in parsers that expect arrays to be homogenous.
 
-### 11. Big Numbers
+#### 11. Big Numbers
 
 ```json
 {
@@ -128,7 +140,7 @@ While this is valid JSON, it could cause issues in parsers that expect arrays to
 
 Large numbers can cause precision loss issues in parsers that don't handle them correctly.
 
-### 12. Circular References (though not valid JSON)
+#### 12. Circular References (though not valid JSON)
 
 ```json
 {
@@ -139,7 +151,7 @@ Large numbers can cause precision loss issues in parsers that don't handle them 
 
 Circular references are not valid in JSON but if your parser encounters them, it could fail unless special handling is implemented.
 
-### 13. Duplicate Keys
+#### 13. Duplicate Keys
 
 ```json
 {
@@ -149,5 +161,3 @@ Circular references are not valid in JSON but if your parser encounters them, it
 ```
 
 JSON doesn’t technically disallow duplicate keys, but parsers should decide how to handle them (`value2` will overwrite `value1` in most parsers).
-
-Test your parser against these examples to ensure it handles all edge cases robustly. Note that adhering strictly to the [JSON specification](http://www.json.org/) will avoid many of these issues.
