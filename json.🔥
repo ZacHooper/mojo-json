@@ -1,59 +1,18 @@
 from lexer import lex
 
-# from parser import parse
-from types import Value, JSON_SYNTAX, JSON_QUOTE, JsonList, JsonDict
-
-
-fn any_json_type_to_string(value: Value) raises -> String:
-    """
-    Recursively convert a JsonValue to a string.
-    If a discrete value, return the string representation.
-    If a list, convert each element to a string and join them with commas.
-        NOTE: we recursively call this function as the elements of the list can be of any JSON type.
-    If a dictionary, convert each key-value pair to a string and join them with commas.
-        NOTE: Same as list we recursively call this function as the values of the dictionary can be of any JSON type.
-    """
-    if value._variant.isa[String]():
-        var string_value = value._variant[String]
-        if len(string_value) == 0:
-            return '""'
-        elif string_value in JSON_SYNTAX:
-            return string_value
-        else:
-            return '"' + value._variant[String] + '"'
-    elif value._variant.isa[Int]():
-        return str(value._variant[Int])
-    elif value._variant.isa[Float64]():
-        return str(value._variant[Float64])
-    elif value._variant.isa[Bool]():
-        return str(value._variant[Bool])
-    elif value._variant.isa[NoneType]():
-        return "null"
-    elif value._variant.isa[JsonList]():
-        var array = value._variant[JsonList]._data
-        var result: String = "["
-        for i in range(len(array)):
-            result += any_json_type_to_string(array[i])
-            if i < len(array) - 1:
-                result += ","
-        result += "]"
-        return result
-    elif value._variant.isa[JsonDict]():
-        # Get the data from the JsonDict
-        var obj = value._variant[JsonDict]._data
-        var result: String = "{"
-        var keys = List[String]()
-        for key in obj:
-            keys.append(key[])
-        for key in obj:
-            var key_str = key[]
-            result += '"' + key_str + '":' + any_json_type_to_string(obj[key[]])
-            if key[] != keys[-1]:
-                result += ","
-        result += "}"
-        return result
-    else:
-        raise Error("Unknown type")
+from parser import is_special_token, parse
+from types import (
+    Value,
+    JSON_SYNTAX,
+    JSON_QUOTE,
+    JsonList,
+    JsonDict,
+    JSON_LEFTBRACE,
+    JSON_LEFTBRACKET,
+    JSON_RIGHTBRACKET,
+    JSON_COMMA,
+)
+from stringify import stringify
 
 
 fn main() raises:
@@ -68,9 +27,52 @@ fn main() raises:
         "nickname": ""
     }
     """
-
+    print("Lexing JSON:")
     var tokens = lex(json)
     for token in range(len(tokens)):
-        var token_str = any_json_type_to_string(tokens[token])
+        var token_str = stringify(tokens[token])
         print(token_str, end="")
-    # parse(tokens)
+
+    print("\n\nParsing JSON:")
+    var json_value = parse(tokens)
+    print(stringify(json_value))
+
+    var json_2: String = """
+    {
+        "name": "John",
+        "age": 30,
+        "wage": 25.4,
+        "is_student": false,
+        "has_job": true,
+        "is_null": null,
+        "nickname": "",
+        "friends": [
+            "Alice",
+            "Bob",
+            "Charlie"
+        ],
+        "address": {
+            "street": "123 Main St",
+            "city": "Springfield",
+            "state": "IL",
+            "zip": 62701
+        },
+        "phone_numbers": {
+            "home": "217-555-1234",
+            "work": "312-555-1234",
+            "cell": [
+                "312-555-4321",
+                "312-555-5432"
+            ]
+        }
+    }
+    """
+    print("Lexing JSON:")
+    var tokens_2 = lex(json_2)
+    for token in range(len(tokens_2)):
+        var token_str = stringify(tokens_2[token])
+        print(token_str, end="")
+
+    print("\n\nParsing JSON:")
+    var json_value_2 = parse(tokens_2)
+    print(stringify(json_value_2))
