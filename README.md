@@ -14,6 +14,10 @@ json.dumps(x)
 >>> '{"key": "value"}'
 ```
 
+## Installation
+
+Copy the `json.📦` file into your project and it should be usable.
+
 ## TODO
 
 ### Edge Cases to Consider
