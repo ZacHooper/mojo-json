@@ -3,14 +3,18 @@ from types import (
     JSON_QUOTE,
     JSON_WHITESPACE,
     JSON_SYNTAX,
-    JsonValue,
+    Value,
 )
 
 
 @value
 struct LexResult:
-    var value: JsonValue
+    var value: Value
     var is_null: Bool
+
+    fn __init__(inout self, value: AnyJsonObject, is_null: Bool):
+        self.value = Value(value)
+        self.is_null = is_null
 
 
 fn lex_string(inout string: String) raises -> LexResult:
@@ -77,8 +81,8 @@ fn lex_null(inout string: String) -> LexResult:
         return LexResult(None, False)
 
 
-fn lex(inout string: String) raises -> List[JsonValue]:
-    var tokens = List[JsonValue]()
+fn lex(inout string: String) raises -> List[Value]:
+    var tokens = List[Value]()
 
     while len(string):
         var json_string = lex_string(string)
@@ -98,13 +102,13 @@ fn lex(inout string: String) raises -> List[JsonValue]:
 
         var json_null = lex_null(string)
         if json_null.is_null == True:
-            tokens.append(None)
+            tokens.append(Value(None))
             continue
 
         if string[0] in JSON_WHITESPACE:
             string = string[1:]
         elif string[0] in JSON_SYNTAX:
-            tokens.append(string[0])
+            tokens.append(Value(string[0]))
             string = string[1:]
         else:
             raise Error(

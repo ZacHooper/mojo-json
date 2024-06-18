@@ -26,12 +26,12 @@ alias JSON_COLON = ":"
 
 @value
 struct JsonList(CollectionElement):
-    var _data: List[JsonValue]
+    var _data: List[Value]
 
 
 @value
 struct JsonDict(CollectionElement):
-    var _data: Dict[String, JsonValue]
+    var _data: Dict[String, Value]
 
 
 alias AnyJsonObject = Variant[
@@ -40,7 +40,7 @@ alias AnyJsonObject = Variant[
 
 
 @value
-struct JsonValue(CollectionElement):
+struct Value(CollectionElement):
     var _variant: AnyJsonObject
 
     @always_inline
