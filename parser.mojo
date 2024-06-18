@@ -1,5 +1,5 @@
 from types import *
-from stringify import any_json_type_to_string
+from stringify import any_json_type_to_string, stringify
 
 
 fn is_special_token(token: Value, special_token: String) -> Bool:
@@ -46,7 +46,6 @@ fn parse_object(inout tokens: List[Value]) raises -> Value:
 
         # Check if key is special token
         if is_special_token(key, JSON_RIGHTBRACE):
-            tokens = tokens[1:]
             return Value(JsonDict(json_object))
         if is_special_token(tokens[0], JSON_COMMA):
             tokens = tokens[1:]

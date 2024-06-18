@@ -81,8 +81,9 @@ fn lex_null(inout string: String) -> LexResult:
         return LexResult(None, False)
 
 
-fn lex(inout string: String) raises -> List[Value]:
+fn lex(raw_string: String) raises -> List[Value]:
     var tokens = List[Value]()
+    var string = raw_string
 
     while len(string):
         var json_string = lex_string(string)

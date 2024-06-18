@@ -15,29 +15,17 @@ from types import (
 from stringify import stringify
 
 
+fn loads(raw_json: String) raises -> Value:
+    var tokens = lex(raw_json)
+    return parse(tokens)
+
+
+fn dumps(value: Value) raises -> String:
+    return stringify(value)
+
+
 fn main() raises:
-    var json: String = """
-    {
-        "name": "John",
-        "age": 30,
-        "wage": 25.4,
-        "is_student": false,
-        "has_job": true,
-        "is_null": null,
-        "nickname": ""
-    }
-    """
-    print("Lexing JSON:")
-    var tokens = lex(json)
-    for token in range(len(tokens)):
-        var token_str = stringify(tokens[token])
-        print(token_str, end="")
-
-    print("\n\nParsing JSON:")
-    var json_value = parse(tokens)
-    print(stringify(json_value))
-
-    var json_2: String = """
+    var raw_json: String = """
     {
         "name": "John",
         "age": 30,
@@ -46,33 +34,16 @@ fn main() raises:
         "has_job": true,
         "is_null": null,
         "nickname": "",
-        "friends": [
-            "Alice",
-            "Bob",
-            "Charlie"
-        ],
         "address": {
-            "street": "123 Main St",
-            "city": "Springfield",
-            "state": "IL",
-            "zip": 62701
+            "street": "Main Street",
+            "city": "New York",
+            "zip": 10001
         },
-        "phone_numbers": {
-            "home": "217-555-1234",
-            "work": "312-555-1234",
-            "cell": [
-                "312-555-4321",
-                "312-555-5432"
-            ]
-        }
+        "phone_numbers": [
+            "123-456-7890",
+            "098-765-4321"
+        ]
     }
     """
-    print("Lexing JSON:")
-    var tokens_2 = lex(json_2)
-    for token in range(len(tokens_2)):
-        var token_str = stringify(tokens_2[token])
-        print(token_str, end="")
-
-    print("\n\nParsing JSON:")
-    var json_value_2 = parse(tokens_2)
-    print(stringify(json_value_2))
+    var parsed_json = loads(raw_json)
+    print(dumps(parsed_json))

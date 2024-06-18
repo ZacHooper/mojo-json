@@ -126,7 +126,6 @@ fn test_parse_object_with_array() raises -> None:
     check_element("key_5", Value(JsonList(expected_list)))
 
 
-
 fn test_json_type_to_string() raises -> None:
     var v1 = Value(str("json"))
     print(any_json_type_to_string(v1))
@@ -218,6 +217,104 @@ fn test_lexor_sub_lists_and_objects() raises -> None:
     assert_equal(len(tokens), 23, "Length should be 23")
 
 
+fn test_sub_lists_objects() raises -> None:
+    var raw_json: String = """
+    {
+        "name": "John",
+        "age": 30,
+        "wage": 25.4,
+        "is_student": false,
+        "has_job": true,
+        "is_null": null,
+        "nickname": "",
+        "address": {
+            "street": "Main Street",
+            "city": "New York",
+            "zip": 10001
+        },
+        "phone_numbers": [
+            "123-456-7890",
+            "098-765-4321"
+        ],
+        "friends": [
+            {
+                "name": "Jane",
+                "age": 25,
+                "phone_numbers": [
+                    "123-456-7890",
+                    "098-765-4321"
+                ]
+            },
+            {
+                "name": "Doe",
+                "age": 35
+            }
+        ]
+    }
+    """
+    var tokens = lex(raw_json)
+    for i in range(len(tokens)):
+        print("Item: ", any_json_type_to_string(tokens[i]))
+    assert_equal(len(tokens), 85, "Length should be 85")
+    var res = parse(tokens)
+    print(stringify(res))
+
+
+fn test_object_with_list_object() raises -> None:
+    var lex_array = List[Value]()
+    lex_array.append(Value(String("{")))
+    lex_array.append(Value(String("friends")))
+    lex_array.append(Value(String(":")))
+    lex_array.append(Value(String("[")))
+    lex_array.append(Value(String("{")))
+    lex_array.append(Value(String("name")))
+    lex_array.append(Value(String(":")))
+    lex_array.append(Value(String("Jane")))
+    lex_array.append(Value(String(",")))
+    lex_array.append(Value(String("age")))
+    lex_array.append(Value(String(":")))
+    lex_array.append(Value(25))
+    lex_array.append(Value(String(",")))
+    lex_array.append(Value(String("phone_numbers")))
+    lex_array.append(Value(String(":")))
+    lex_array.append(Value(String("[")))
+    lex_array.append(Value(String("123-456-7890")))
+    lex_array.append(Value(String(",")))
+    lex_array.append(Value(String("098-765-4321")))
+    lex_array.append(Value(String("]")))
+    lex_array.append(Value(String("}")))
+    lex_array.append(Value(String(",")))
+    lex_array.append(Value(String("{")))
+    lex_array.append(Value(String("name")))
+    lex_array.append(Value(String(":")))
+    lex_array.append(Value(String("Doe")))
+    lex_array.append(Value(String(",")))
+    lex_array.append(Value(String("age")))
+    lex_array.append(Value(String(":")))
+    lex_array.append(Value(35))
+    lex_array.append(Value(String("}")))
+    lex_array.append(Value(String("]")))
+    lex_array.append(Value(String("}")))
+
+    var res = parse(lex_array)
+    print(stringify(res))
+
+
+fn test_object_with_list_object_2() raises -> None:
+    """TODO: FIX ME. Fails when a dict has a list of dicts, with some values in it. Empty dicts appear to be fine.
+    """
+    var raw_json: String = """
+    {
+        "friends": [
+            {"name": 1}
+        ]
+    }
+    """
+    var tokens = lex(raw_json)
+    var res = parse(tokens)
+    print(stringify(res))
+
+
 fn run_test(test_fn: fn () raises -> None) -> None:
     print("Running test...")
     try:
@@ -237,5 +334,8 @@ fn main() raises:
     run_test(test_parse_array)
     run_test(test_parse_object)
     run_test(test_parse_object_with_array)
+    run_test(test_sub_lists_objects)
+    run_test(test_object_with_list_object)
+    run_test(test_object_with_list_object_2)
 
     print("==== FINISHED TESTS ====")
