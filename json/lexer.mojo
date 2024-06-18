@@ -1,4 +1,4 @@
-from types import (
+from json.types import (
     AnyJsonObject,
     JSON_QUOTE,
     JSON_WHITESPACE,

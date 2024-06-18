@@ -1,8 +1,8 @@
-from parser import parse
-from types import Value, JsonDict, JsonList
+from json.parser import parse
+from json.types import Value, JsonDict, JsonList
 from testing import assert_equal
-from stringify import any_json_type_to_string, stringify
-from lexer import lex
+from json.stringify import any_json_type_to_string, stringify
+from json.lexer import lex
 
 
 fn test_parse_array() raises -> None:
@@ -301,8 +301,6 @@ fn test_object_with_list_object() raises -> None:
 
 
 fn test_object_with_list_object_2() raises -> None:
-    """TODO: FIX ME. Fails when a dict has a list of dicts, with some values in it. Empty dicts appear to be fine.
-    """
     var raw_json: String = """
     {
         "friends": [
@@ -313,29 +311,3 @@ fn test_object_with_list_object_2() raises -> None:
     var tokens = lex(raw_json)
     var res = parse(tokens)
     print(stringify(res))
-
-
-fn run_test(test_fn: fn () raises -> None) -> None:
-    print("Running test...")
-    try:
-        test_fn()
-    except e:
-        print("Test failed: " + str(e))
-    else:
-        print("Test passed!")
-
-
-fn main() raises:
-    print("==== STARTING TESTS ====")
-    run_test(test_json_type_to_string)
-    run_test(test_lexor_array)
-    run_test(test_lexor_object)
-    run_test(test_lexor_sub_lists_and_objects)
-    run_test(test_parse_array)
-    run_test(test_parse_object)
-    run_test(test_parse_object_with_array)
-    run_test(test_sub_lists_objects)
-    run_test(test_object_with_list_object)
-    run_test(test_object_with_list_object_2)
-
-    print("==== FINISHED TESTS ====")

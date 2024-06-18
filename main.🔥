@@ -1,27 +1,4 @@
-from lexer import lex
-
-from parser import is_special_token, parse
-from types import (
-    Value,
-    JSON_SYNTAX,
-    JSON_QUOTE,
-    JsonList,
-    JsonDict,
-    JSON_LEFTBRACE,
-    JSON_LEFTBRACKET,
-    JSON_RIGHTBRACKET,
-    JSON_COMMA,
-)
-from stringify import stringify
-
-
-fn loads(raw_json: String) raises -> Value:
-    var tokens = lex(raw_json)
-    return parse(tokens)
-
-
-fn dumps(value: Value) raises -> String:
-    return stringify(value)
+from json import loads, dumps
 
 
 fn main() raises:

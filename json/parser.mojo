@@ -1,5 +1,5 @@
-from types import *
-from stringify import any_json_type_to_string, stringify
+from json.types import *
+from json.stringify import any_json_type_to_string, stringify
 
 
 fn is_special_token(token: Value, special_token: String) -> Bool:

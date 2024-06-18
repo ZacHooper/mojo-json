@@ -1,4 +1,4 @@
-from types import Value, JSON_SYNTAX, JsonList, JsonDict
+from json.types import Value, JSON_SYNTAX, JsonList, JsonDict
 
 
 fn any_json_type_to_string(value: Value) raises -> String:
