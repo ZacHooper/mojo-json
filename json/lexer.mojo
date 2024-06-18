@@ -1,10 +1,4 @@
-from json.types import (
-    AnyJsonObject,
-    JSON_QUOTE,
-    JSON_WHITESPACE,
-    JSON_SYNTAX,
-    Value,
-)
+from json.types import JSON_QUOTE, JSON_WHITESPACE, JSON_SYNTAX, Value
 
 
 @value
@@ -12,8 +6,8 @@ struct LexResult:
     var value: Value
     var is_null: Bool
 
-    fn __init__(inout self, value: AnyJsonObject, is_null: Bool):
-        self.value = Value(value)
+    fn __init__(inout self, value: Value, is_null: Bool):
+        self.value = value
         self.is_null = is_null
 
 
@@ -23,12 +17,12 @@ fn lex_string(inout string: String) raises -> LexResult:
     if string[0] == JSON_QUOTE:
         string = string[1:]
     else:
-        return LexResult(None, True)
+        return LexResult(Value(None), True)
 
     for i in range(len(string)):
         if string[i] == JSON_QUOTE:
             string = string[i + 1 :]
-            return LexResult(json_string, False)
+            return LexResult(Value(json_string), False)
         else:
             json_string += string[i]
 
@@ -50,35 +44,35 @@ fn lex_number(inout string: String) raises -> LexResult:
     string = string[len(json_number) :]
 
     if not len(json_number):
-        return LexResult(None, True)
+        return LexResult(Value(None), True)
 
     if "." in json_number:
         var float_string_split = json_number.split(".")
         var integer_part = atol(float_string_split[0])
         var decimal_part = atol(float_string_split[1])
         var num = integer_part + (decimal_part / 10)
-        return LexResult(num, False)
+        return LexResult(Value(num), False)
 
-    return LexResult(atol(json_number), False)
+    return LexResult(Value(atol(json_number)), False)
 
 
 fn lex_bool(inout string: String) -> LexResult:
     if string.startswith("true"):
         string = string[4:]
-        return LexResult(True, False)
+        return LexResult(Value(True), False)
     elif string.startswith("false"):
         string = string[5:]
-        return LexResult(False, False)
+        return LexResult(Value(False), False)
     else:
-        return LexResult(None, True)
+        return LexResult(Value(None), True)
 
 
 fn lex_null(inout string: String) -> LexResult:
     if string.startswith("null"):
         string = string[4:]
-        return LexResult(None, True)
+        return LexResult(Value(None), True)
     else:
-        return LexResult(None, False)
+        return LexResult(Value(None), False)
 
 
 fn lex(raw_string: String) raises -> List[Value]:

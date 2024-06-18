@@ -12,17 +12,6 @@ alias JSON_RIGHTBRACE = "}"
 alias JSON_COMMA = ","
 alias JSON_COLON = ":"
 
-# alias AnyJsonType = Variant[String, Int, Float64, Bool, NoneType]
-# alias AnyJsonObject = Variant[
-#     String,
-#     Int,
-#     Float64,
-#     Bool,
-#     NoneType,
-#     List[AnyJsonType],
-#     Dict[String, AnyJsonType],
-# ]
-
 
 @value
 struct JsonList(CollectionElement):
