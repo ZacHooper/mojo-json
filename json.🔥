@@ -1,32 +1,54 @@
-from lexer import lex
+# from lexer import lex
 
 # from parser import parse
-from types import AnyJsonType, JSON_SYNTAX, JSON_QUOTE
+from types import JsonValue, JSON_SYNTAX, JSON_QUOTE, JsonList, JsonDict
 
 
-fn any_json_type_to_string(value: AnyJsonType) raises -> String:
-    if value.isa[String]():
-        var string_value = value.get[String]()[]
+fn any_json_type_to_string(value: JsonValue) raises -> String:
+    if value._variant.isa[String]():
+        var string_value = value._variant[String]
         if len(string_value) == 0:
             return '""'
         elif string_value in JSON_SYNTAX:
             return string_value
         else:
-            return '"' + value.get[String]()[] + '"'
-    elif value.isa[Int]():
-        return str(value.get[Int]()[])
-    elif value.isa[Float64]():
-        return str(value.get[Float64]()[])
-    elif value.isa[Bool]():
-        return str(value.get[Bool]()[])
-    elif value.isa[NoneType]():
+            return '"' + value._variant[String] + '"'
+    elif value._variant.isa[Int]():
+        return str(value._variant[Int])
+    elif value._variant.isa[Float64]():
+        return str(value._variant[Float64])
+    elif value._variant.isa[Bool]():
+        return str(value._variant[Bool])
+    elif value._variant.isa[NoneType]():
         return "null"
+    elif value._variant.isa[JsonList]():
+        var array = value._variant[JsonList]._data
+        var result: String = "["
+        for i in range(len(array)):
+            result += any_json_type_to_string(array[i])
+            if i < len(array) - 1:
+                result += ","
+        result += "]"
+        return result
+    elif value._variant.isa[JsonDict]():
+        var obj = value._variant[JsonDict]._data
+        var result: String = "{"
+        var keys = List[String]()
+        for key in obj:
+            keys.append(key[])
+        for key in obj:
+            var key_str = key[]
+            result += '"' + key_str + '":' + any_json_type_to_string(obj[key[]])
+            if key[] != keys[-1]:
+                result += ","
+        result += "}"
+        return result
     else:
         raise Error("Unknown type")
 
 
 fn main() raises:
-    var json = """
+    var json: String = """
     {
         "name": "John",
         "age": 30,
@@ -38,8 +60,73 @@ fn main() raises:
     }
     """
 
-    var tokens = lex(json)
-    for token in range(len(tokens)):
-        var token_str = any_json_type_to_string(tokens[token])
-        print(token_str, end="")
+    var v1 = JsonValue(str("json"))
+    print(any_json_type_to_string(v1))
+
+    var v2_list = List[JsonValue]()
+    v2_list.append(JsonValue(str("json")))
+    v2_list.append(JsonValue(1))
+    v2_list.append(JsonValue(1.1))
+    v2_list.append(JsonValue(True))
+    v2_list.append(JsonValue(False))
+    v2_list.append(JsonValue(None))
+
+    var v2 = JsonValue(JsonList(v2_list))
+    print(any_json_type_to_string(v2))
+
+    var v3_dict = Dict[String, JsonValue]()
+    v3_dict["name"] = JsonValue(str("John"))
+    v3_dict["age"] = JsonValue(30)
+    v3_dict["wage"] = JsonValue(25.4)
+    v3_dict["is_student"] = JsonValue(False)
+    v3_dict["has_job"] = JsonValue(True)
+    v3_dict["is_null"] = JsonValue(None)
+
+    var v3 = JsonValue(JsonDict(v3_dict))
+    print(any_json_type_to_string(v3))
+
+    var job1 = Dict[String, JsonValue]()
+    job1["title"] = JsonValue(str("Software Engineer"))
+    job1["company"] = JsonValue(str("Google"))
+    job1["years"] = JsonValue(2)
+
+    var job2 = Dict[String, JsonValue]()
+    job2["title"] = JsonValue(str("Product Manager"))
+    job2["company"] = JsonValue(str("Facebook"))
+    job2["years"] = JsonValue(3)
+
+    var job3 = Dict[String, JsonValue]()
+    job3["title"] = JsonValue(str("Data Scientist"))
+    job3["company"] = JsonValue(str("Amazon"))
+    job3["years"] = JsonValue(1)
+
+    var john = Dict[String, JsonValue]()
+    john["name"] = JsonValue(str("John"))
+    john["age"] = JsonValue(30)
+    john["wage"] = JsonValue(25.4)
+    var john_jobs = List[JsonValue]()
+    john_jobs.append(JsonValue(JsonDict(job1)))
+    john_jobs.append(JsonValue(JsonDict(job2)))
+    john["jobs"] = JsonValue(JsonList(john_jobs))
+
+    var sam = Dict[String, JsonValue]()
+    sam["name"] = JsonValue(str("Sam"))
+    sam["age"] = JsonValue(25)
+    sam["wage"] = JsonValue(20.4)
+
+    var people = List[JsonValue]()
+    people.append(JsonValue(JsonDict(john)))
+    people.append(JsonValue(JsonDict(sam)))
+
+    var v4_dict = Dict[String, JsonValue]()
+    v4_dict["people"] = JsonValue(JsonList(people))
+    v4_dict["count"] = JsonValue(2)
+
+    var v4 = JsonValue(JsonDict(v4_dict))
+    print(any_json_type_to_string(v4))
+
+    # var tokens = lex(json)
+    # for token in range(len(tokens)):
+    #     var token_str = any_json_type_to_string(tokens[token])
+    #     print(token_str, end="")
     # parse(tokens)

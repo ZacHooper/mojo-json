@@ -1,9 +1,15 @@
-from types import AnyJsonType, JSON_QUOTE, JSON_WHITESPACE, JSON_SYNTAX
+from types import (
+    AnyJsonObject,
+    JSON_QUOTE,
+    JSON_WHITESPACE,
+    JSON_SYNTAX,
+    JsonValue,
+)
 
 
 @value
 struct LexResult:
-    var value: AnyJsonType
+    var value: JsonValue
     var is_null: Bool
 
 
@@ -52,7 +58,7 @@ fn lex_number(inout string: String) raises -> LexResult:
     return LexResult(atol(json_number), False)
 
 
-def lex_bool(inout string: String) -> LexResult:
+fn lex_bool(inout string: String) -> LexResult:
     if string.startswith("true"):
         string = string[4:]
         return LexResult(True, False)
@@ -63,7 +69,7 @@ def lex_bool(inout string: String) -> LexResult:
         return LexResult(None, True)
 
 
-def lex_null(inout string: String) -> LexResult:
+fn lex_null(inout string: String) -> LexResult:
     if string.startswith("null"):
         string = string[4:]
         return LexResult(None, True)
@@ -71,8 +77,8 @@ def lex_null(inout string: String) -> LexResult:
         return LexResult(None, False)
 
 
-def lex(string: String) -> List[AnyJsonType]:
-    var tokens = List[AnyJsonType]()
+fn lex(inout string: String) raises -> List[JsonValue]:
+    var tokens = List[JsonValue]()
 
     while len(string):
         var json_string = lex_string(string)
@@ -101,6 +107,8 @@ def lex(string: String) -> List[AnyJsonType]:
             tokens.append(string[0])
             string = string[1:]
         else:
-            raise Error("Unexpected character: " + string[0] + " Near: " + string[1:])
+            raise Error(
+                "Unexpected character: " + string[0] + " Near: " + string[1:]
+            )
 
     return tokens

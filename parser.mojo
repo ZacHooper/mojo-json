@@ -77,7 +77,9 @@ def is_special_token(token: AnyJsonType, special_token: String) -> Bool:
 #     #     return t
 
 
-def parse_object(inout tokens: List[AnyJsonType]) -> Dict[String, AnyJsonObject]:
+def parse_object(
+    inout tokens: List[AnyJsonType],
+) -> Dict[String, AnyJsonObject]:
     var t = tokens[0]
     var json_object = Dict[String, AnyJsonObject]()
     # if t.isa[String]():
@@ -88,7 +90,7 @@ def parse_object(inout tokens: List[AnyJsonType]) -> Dict[String, AnyJsonObject]
 
 
 fn parse(inout tokens: List[AnyJsonType]) raises -> Dict[String, AnyJsonType]:
-    """testing to workout JSON object."""
+    """Testing to workout JSON object."""
     var output = Dict[String, AnyJsonType]()
     var t = tokens[0]
     tokens = tokens[1:]
@@ -109,4 +111,3 @@ fn parse(inout tokens: List[AnyJsonType]) raises -> Dict[String, AnyJsonType]:
             tokens = tokens[1:]
             output[key.get[String]()[]] = value
     return output
-
