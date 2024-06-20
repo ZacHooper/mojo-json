@@ -20,6 +20,12 @@ Copy the `json.📦` file into your project and it should be usable.
 
 ## TODO
 
+1. ~~Fix parsing of floats.
+2. Refactor the parser to use slices of the tokens. The way we are currently doing it probably results in a lot of copys of the list.
+3. Checking if the first token is a right brace twice. Should be able to do this once.
+4. Add streaming capabilities.
+5. Better handle escaped characters in Strings.
+
 ### Edge Cases to Consider
 
 #### 1. Trailing Comma
