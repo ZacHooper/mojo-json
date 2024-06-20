@@ -5,7 +5,10 @@ from json.stringify import stringify
 
 
 fn loads(raw_json: String) raises -> Value:
+    print("Lexing JSON")
     var tokens = lex(raw_json)
+
+    print("Parsing JSON")
     return parse(tokens)
 
 

@@ -20,9 +20,18 @@ fn lex_string(inout string: String) raises -> LexResult:
         return LexResult(Value(None), True)
 
     for i in range(len(string)):
-        if string[i] == JSON_QUOTE:
+        # Handle empty string
+        if string[i] == JSON_QUOTE and len(json_string) == 0:
+            string = string[1:]
+            return LexResult(Value(json_string), False)
+        # Handle end of string. Make sure the previous character is not an escape character
+        if string[i] == JSON_QUOTE and json_string[-1] != "\\":
             string = string[i + 1 :]
             return LexResult(Value(json_string), False)
+        # Handle escape characters
+        elif json_string == "\\" and string[i] != "\\":
+            json_string = json_string[:-1]
+            json_string += string[i]
         else:
             json_string += string[i]
 
@@ -47,10 +56,7 @@ fn lex_number(inout string: String) raises -> LexResult:
         return LexResult(Value(None), True)
 
     if "." in json_number:
-        var float_string_split = json_number.split(".")
-        var integer_part = atol(float_string_split[0])
-        var decimal_part = atol(float_string_split[1])
-        var num = integer_part + (decimal_part / 10)
+        var num = atof(json_number)
         return LexResult(Value(num), False)
 
     return LexResult(Value(atol(json_number)), False)

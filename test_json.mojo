@@ -1,6 +1,6 @@
 from json.parser import parse
 from json.types import Value, JsonDict, JsonList
-from testing import assert_equal
+from testing import assert_equal, assert_almost_equal
 from json.stringify import any_json_type_to_string, stringify
 from json.lexer import lex
 
@@ -311,3 +311,101 @@ fn test_object_with_list_object_2() raises -> None:
     var tokens = lex(raw_json)
     var res = parse(tokens)
     print(stringify(res))
+
+
+fn test_negative_integer() raises -> None:
+    var raw_json: String = """
+    {
+        "number": -1
+    }
+    """
+    var tokens = lex(raw_json)
+    var res = parse(tokens)
+    print(stringify(res))
+    assert_equal(any_json_type_to_string(res), '{"number":-1}', "Should be -1")
+
+
+fn test_negative_float() raises -> None:
+    """TODO: Currently failing cause of floating point issues."""
+    var raw_json: String = """
+    {
+        "number": -1.1
+    }
+    """
+    var tokens = lex(raw_json)
+    var res = parse(tokens)
+    print(stringify(res))
+    assert_equal(
+        any_json_type_to_string(res), '{"number":-1.1}', "Should be -1.1"
+    )
+
+
+fn test_negative_floats_in_array() raises -> None:
+    var raw_json: String = """
+    {
+        "numbers": [-65.613616999999977,43.420273000000009]
+    }
+    """
+    var tokens = lex(raw_json)
+    var res = parse(tokens)
+    print(stringify(res))
+    assert_equal(
+        any_json_type_to_string(res),
+        '{"numbers":[-65.613616999999977,43.420273000000009]}',
+        "Should be [-65.613616999999977,43.420273000000009]",
+    )
+
+
+fn test_handle_escaped_special_characters() raises -> None:
+    var raw_json: String = '{"quote": "\\""'
+    var tokens = lex(raw_json)
+    var expected: String = '"'
+    assert_equal(
+        tokens[3]._variant.take[String](), expected, "Should be " + expected
+    )
+
+
+fn test_handle_escaped_special_characters_2() raises -> None:
+    var raw_json: String = """{"quote": "<a href=\\"http://twitter.com/download/iphone\\" rel=\\"nofollow\\">Twitter for iPhone</a>"}"""
+    var tokens = lex(raw_json)
+    var expected: String = '"'
+    assert_equal(
+        tokens[3]._variant.take[String](), expected, "Should be " + expected
+    )
+
+
+fn test_handle_escaped_special_characters_3() raises -> None:
+    "TODO: Currently failing cause of escaping issues."
+    var raw_json: String = '{"quote": "\\\\"}'
+    var tokens = lex(raw_json)
+    var expected: String = "\\"
+    assert_equal(
+        tokens[3]._variant.take[String](), expected, "Should be " + expected
+    )
+
+
+fn test_handle_empty_string() raises -> None:
+    "TODO: Currently failing cause of escaping issues."
+    var raw_json: String = '{"quote":""}'
+    var tokens = lex(raw_json)
+    var expected: String = ""
+    assert_equal(
+        tokens[3]._variant.take[String](), expected, "Should be " + expected
+    )
+
+
+fn run_test(test_fn: fn () raises -> None) raises -> None:
+    print("Running test: ")
+    try:
+        test_fn()
+        print("Test passed: ")
+    except e:
+        print("Test failed: ", e)
+
+
+fn main() raises:
+    # run_test(test_negative_float)
+    # run_test(test_negative_floats_in_array)
+    run_test(test_handle_escaped_special_characters)
+    # run_test(test_handle_escaped_special_characters_3)
+    run_test(test_handle_empty_string)
