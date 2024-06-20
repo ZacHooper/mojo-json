@@ -1,0 +1,23 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Canada"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "United States"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Mexico"
+            }
+        }
+    ]
+}
