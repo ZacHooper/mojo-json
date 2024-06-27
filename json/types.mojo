@@ -4,6 +4,8 @@ from collections import List, Dict
 alias JSON_QUOTE = '"'
 alias JSON_WHITESPACE = " \t\n"
 alias JSON_SYNTAX = "{}[],:"
+alias JSON_NUMBER = "-0123456789"
+alias JSON_ESCAPE = "\\"
 
 alias JSON_LEFTBRACKET = "["
 alias JSON_RIGHTBRACKET = "]"

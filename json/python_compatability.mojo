@@ -9,7 +9,8 @@ fn loads(raw_json: String) raises -> Value:
     var tokens = lex(raw_json)
 
     print("Parsing JSON")
-    return parse(tokens)
+    var initial_position = 0
+    return parse(tokens, initial_position)
 
 
 fn dumps(value: Value) raises -> String:
