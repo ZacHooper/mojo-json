@@ -15,7 +15,8 @@ fn test_parse_array() raises -> None:
     tokens.append(Value(3))
     tokens.append(Value(String("]")))
 
-    var res = parse(tokens)
+    var initial_position = 0
+    var res = parse(tokens, initial_position)
     print(stringify(res))
 
     var json_list = res._variant[JsonList]._data
@@ -53,7 +54,8 @@ fn test_parse_object() raises -> None:
     lex_array.append(Value(1.2))
     lex_array.append(Value(String("}")))
 
-    var res = parse(lex_array)
+    var initial_position = 0
+    var res = parse(lex_array, initial_position)
     print(stringify(res))
 
     var json_dict = res._variant[JsonDict]._data
@@ -102,7 +104,8 @@ fn test_parse_object_with_array() raises -> None:
     lex_array.append(Value(String("]")))
     lex_array.append(Value(String("}")))
 
-    var res = parse(lex_array)
+    var initial_position = 0
+    var res = parse(lex_array, initial_position)
     print(stringify(res))
 
     var json_dict = res._variant[JsonDict]._data
@@ -256,7 +259,8 @@ fn test_sub_lists_objects() raises -> None:
     for i in range(len(tokens)):
         print("Item: ", any_json_type_to_string(tokens[i]))
     assert_equal(len(tokens), 85, "Length should be 85")
-    var res = parse(tokens)
+    var initial_position = 0
+    var res = parse(tokens, initial_position)
     print(stringify(res))
 
 
@@ -296,7 +300,8 @@ fn test_object_with_list_object() raises -> None:
     lex_array.append(Value(String("]")))
     lex_array.append(Value(String("}")))
 
-    var res = parse(lex_array)
+    var initial_position = 0
+    var res = parse(lex_array, initial_position)
     print(stringify(res))
 
 
@@ -309,7 +314,8 @@ fn test_object_with_list_object_2() raises -> None:
     }
     """
     var tokens = lex(raw_json)
-    var res = parse(tokens)
+    var initial_position = 0
+    var res = parse(tokens, initial_position)
     print(stringify(res))
 
 
@@ -320,7 +326,8 @@ fn test_negative_integer() raises -> None:
     }
     """
     var tokens = lex(raw_json)
-    var res = parse(tokens)
+    var initial_position = 0
+    var res = parse(tokens, initial_position)
     print(stringify(res))
     assert_equal(any_json_type_to_string(res), '{"number":-1}', "Should be -1")
 
@@ -333,7 +340,8 @@ fn test_negative_float() raises -> None:
     }
     """
     var tokens = lex(raw_json)
-    var res = parse(tokens)
+    var initial_position = 0
+    var res = parse(tokens, initial_position)
     print(stringify(res))
     assert_equal(
         any_json_type_to_string(res), '{"number":-1.1}', "Should be -1.1"
@@ -341,25 +349,23 @@ fn test_negative_float() raises -> None:
 
 
 fn test_negative_floats_in_array() raises -> None:
-    var raw_json: String = """
-    {
-        "numbers": [-65.613616999999977,43.420273000000009]
-    }
-    """
+    var raw_json: String = '{"numbers": [-65.613616999999977,43.420273000000009]}'
     var tokens = lex(raw_json)
-    var res = parse(tokens)
+    var initial_position = 0
+    var res = parse(tokens, initial_position)
     print(stringify(res))
     assert_equal(
         any_json_type_to_string(res),
         '{"numbers":[-65.613616999999977,43.420273000000009]}',
-        "Should be [-65.613616999999977,43.420273000000009]",
+        "Should be [-65.613616999999977,43.420273000000009] but got "
+        + any_json_type_to_string(res),
     )
 
 
 fn test_handle_escaped_special_characters() raises -> None:
     var raw_json: String = '{"quote": "\\""'
     var tokens = lex(raw_json)
-    var expected: String = '"'
+    var expected: String = '\\"'
     assert_equal(
         tokens[3]._variant.take[String](), expected, "Should be " + expected
     )
@@ -378,7 +384,7 @@ fn test_handle_escaped_special_characters_3() raises -> None:
     "TODO: Currently failing cause of escaping issues."
     var raw_json: String = '{"quote": "\\\\"}'
     var tokens = lex(raw_json)
-    var expected: String = "\\"
+    var expected: String = "\\\\"
     assert_equal(
         tokens[3]._variant.take[String](), expected, "Should be " + expected
     )
@@ -405,7 +411,7 @@ fn run_test(test_fn: fn () raises -> None) raises -> None:
 
 fn main() raises:
     # run_test(test_negative_float)
-    # run_test(test_negative_floats_in_array)
-    run_test(test_handle_escaped_special_characters)
+    run_test(test_negative_floats_in_array)
+    # run_test(test_handle_escaped_special_characters)
     # run_test(test_handle_escaped_special_characters_3)
-    run_test(test_handle_empty_string)
+    # run_test(test_handle_empty_string)

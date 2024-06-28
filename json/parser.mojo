@@ -9,9 +9,9 @@ fn is_special_token(token: Value, special_token: String) -> Bool:
     return False
 
 
-fn parse_array(inout tokens: List[Value]) raises -> Value:
+fn parse_array(tokens: List[Value], inout position: Int) raises -> Value:
     # First check if this is the end of the array
-    var first_token = tokens[0]
+    var first_token = tokens[position]
     var json_array = List[Value]()
     if is_special_token(first_token, JSON_RIGHTBRACKET):
         return Value(JsonList(json_array))
@@ -19,22 +19,24 @@ fn parse_array(inout tokens: List[Value]) raises -> Value:
     # Loop through each token in the array. If Comma move to the next token
     # If RightBracket, return the array
     while len(tokens) > 0:
-        var next_token = tokens[0]
+        var next_token = tokens[position]
         if is_special_token(next_token, JSON_RIGHTBRACKET):
             return Value(JsonList(json_array))
         elif is_special_token(next_token, JSON_COMMA):
-            tokens = tokens[1:]
+            # tokens = tokens[1:]
+            position += 1
         else:
-            var parsed_token = parse(tokens)
+            var parsed_token = parse(tokens, position)
             json_array.append(parsed_token)
-            tokens = tokens[1:]
+            # tokens = tokens[1:]
+            position += 1
 
     return Value(JsonList(json_array))
 
 
-fn parse_object(inout tokens: List[Value]) raises -> Value:
+fn parse_object(tokens: List[Value], inout position: Int) raises -> Value:
     # Make sure it's not an empty object
-    var first_token = tokens[0]
+    var first_token = tokens[position]
     var json_object = Dict[String, Value]()
     if is_special_token(first_token, JSON_RIGHTBRACE):
         return Value(JsonDict(json_object))
@@ -42,37 +44,43 @@ fn parse_object(inout tokens: List[Value]) raises -> Value:
     # Loop through each key-value pair in the object
     while len(tokens) > 0:
         # Get the key
-        var key = tokens[0]
+        var key = tokens[position]
 
         # Check if key is special token
         if is_special_token(key, JSON_RIGHTBRACE):
             return Value(JsonDict(json_object))
-        if is_special_token(tokens[0], JSON_COMMA):
-            tokens = tokens[1:]
+        if is_special_token(tokens[position], JSON_COMMA):
+            # tokens = tokens[1:]
+            position += 1
             continue
 
         # Check next token is a colon
-        tokens = tokens[1:]
-        if is_special_token(tokens[0], JSON_COLON) == False:
+        # tokens = tokens[1:]
+        position += 1
+        if is_special_token(tokens[position], JSON_COLON) == False:
             raise Error("Expected colon after key in object")
 
         # Get the value of the key
-        tokens = tokens[1:]
-        var value = parse(tokens)
+        # tokens = tokens[1:]
+        position += 1
+        var value = parse(tokens, position)
         json_object[key._variant[String]] = value
-        tokens = tokens[1:]
+        # tokens = tokens[1:]
+        position += 1
 
     return Value(JsonDict(json_object))
 
 
-fn parse(inout tokens: List[Value]) raises -> Value:
-    var first_token = tokens[0]
+fn parse(tokens: List[Value], inout position: Int) raises -> Value:
+    var first_token = tokens[position]
 
     if is_special_token(first_token, JSON_LEFTBRACE):
-        tokens = tokens[1:]
-        return parse_object(tokens)
+        # tokens = tokens[1:]
+        position += 1
+        return parse_object(tokens, position)
     if is_special_token(first_token, JSON_LEFTBRACKET):
-        tokens = tokens[1:]
-        return parse_array(tokens)
+        # tokens = tokens[1:]
+        position += 1
+        return parse_array(tokens, position)
 
     return first_token

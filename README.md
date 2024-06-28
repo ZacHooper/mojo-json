@@ -21,10 +21,12 @@ Copy the `json.📦` file into your project and it should be usable.
 ## TODO
 
 1. ~~Fix parsing of floats.
-2. Refactor the parser to use slices of the tokens. The way we are currently doing it probably results in a lot of copys of the list.
-3. Checking if the first token is a right brace twice. Should be able to do this once.
+2. Refactor the parser to use slices of the tokens
+3. ~~Checking if the first token is a right brace twice. Should be able to do this once.
 4. Add streaming capabilities.
-5. Better handle escaped characters in Strings.
+5. ~~Better handle escaped characters in Strings.
+6. Moooore performance
+7. Add GitHub action to build package
 
 ### Edge Cases to Consider
 
@@ -171,3 +173,14 @@ Circular references are not valid in JSON but if your parser encounters them, it
 ```
 
 JSON doesn’t technically disallow duplicate keys, but parsers should decide how to handle them (`value2` will overwrite `value1` in most parsers).
+
+## Progress
+
+V0.0.1
+
+- Working but slooooow. So long that I didn't wait to see when it finished parsing the canada.json file.
+
+V0.0.2
+
+- Addressed copy issues.
+- Now parses the canada.json file in 700ms on my hardware. Still slow but actually usable now.
