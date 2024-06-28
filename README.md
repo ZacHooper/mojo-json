@@ -26,6 +26,7 @@ Copy the `json.📦` file into your project and it should be usable.
 4. Add streaming capabilities.
 5. ~~Better handle escaped characters in Strings.
 6. Moooore performance
+7. Add GitHub action to build package
 
 ### Edge Cases to Consider
 
