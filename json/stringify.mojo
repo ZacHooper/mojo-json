@@ -19,11 +19,11 @@ fn any_json_type_to_string(value: Value) raises -> String:
         else:
             return '"' + value._variant[String] + '"'
     elif value._variant.isa[Int]():
-        return str(value._variant[Int])
+        return String(value._variant[Int])
     elif value._variant.isa[Float64]():
-        return str(value._variant[Float64])
+        return String(value._variant[Float64])
     elif value._variant.isa[Bool]():
-        return str(value._variant[Bool])
+        return String(value._variant[Bool])
     elif value._variant.isa[NoneType]():
         return "null"
     elif value._variant.isa[JsonList]():
@@ -41,11 +41,11 @@ fn any_json_type_to_string(value: Value) raises -> String:
         var result: String = "{"
         var keys = List[String]()
         for key in obj:
-            keys.append(key[])
+            keys.append(key)
         for key in obj:
-            var key_str = key[]
-            result += '"' + key_str + '":' + any_json_type_to_string(obj[key[]])
-            if key[] != keys[-1]:
+            var key_str = key
+            result += '"' + String(key_str) + '":' + any_json_type_to_string(obj[key])
+            if key != keys[-1]:
                 result += ","
         result += "}"
         return result
