@@ -8,7 +8,7 @@ from json.types import (
 )
 
 
-fn lex_string(string: String, inout position: Int) raises -> String:
+fn lex_string(string: String,  mut position: Int) raises -> String:
     var json_string: String = ""
     var start_of_string = position
 
@@ -41,7 +41,7 @@ fn lex_string(string: String, inout position: Int) raises -> String:
     raise Error("Expected end-of-string quote")
 
 
-fn lex_number(string: String, inout position: Int) raises -> Value:
+fn lex_number(string: String,  mut position: Int) raises -> Value:
     var json_number: String = ""
     var number_characters = "1234567890-e."
     var original_position = position

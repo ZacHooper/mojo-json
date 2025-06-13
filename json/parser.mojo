@@ -9,7 +9,7 @@ fn is_special_token(token: Value, special_token: String) -> Bool:
     return False
 
 
-fn parse_array(tokens: List[Value], inout position: Int) raises -> Value:
+fn parse_array(tokens: List[Value], mut position: Int) raises -> Value:
     # First check if this is the end of the array
     var first_token = tokens[position]
     var json_array = List[Value]()
@@ -34,7 +34,7 @@ fn parse_array(tokens: List[Value], inout position: Int) raises -> Value:
     return Value(JsonList(json_array))
 
 
-fn parse_object(tokens: List[Value], inout position: Int) raises -> Value:
+fn parse_object(tokens: List[Value], mut position: Int) raises -> Value:
     # Make sure it's not an empty object
     var first_token = tokens[position]
     var json_object = Dict[String, Value]()
@@ -71,7 +71,7 @@ fn parse_object(tokens: List[Value], inout position: Int) raises -> Value:
     return Value(JsonDict(json_object))
 
 
-fn parse(tokens: List[Value], inout position: Int) raises -> Value:
+fn parse(tokens: List[Value], mut position: Int) raises -> Value:
     var first_token = tokens[position]
 
     if is_special_token(first_token, JSON_LEFTBRACE):

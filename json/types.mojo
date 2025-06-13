@@ -15,13 +15,14 @@ alias JSON_COMMA = ","
 alias JSON_COLON = ":"
 
 
+
 @value
-struct JsonList(CollectionElement):
+struct JsonList:
     var _data: List[Value]
 
 
 @value
-struct JsonDict(CollectionElement):
+struct JsonDict:
     var _data: Dict[String, Value]
 
 
@@ -31,13 +32,13 @@ alias AnyJsonObject = Variant[
 
 
 @value
-struct Value(CollectionElement):
+struct Value:
     var _variant: AnyJsonObject
 
     @always_inline
-    fn __moveinit__(inout self, owned existing: Self):
+    fn __moveinit__(out self, owned existing: Self):
         self._variant = existing._variant
 
     @always_inline
-    fn __copyinit__(inout self, existing: Self):
+    fn __copyinit__(out self, existing: Self):
         self._variant = existing._variant
